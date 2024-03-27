@@ -13,7 +13,7 @@ import java.util.List;
  * This class holds information regarding nodes in the graph together with the
  * successors associated to the nodes.
  * </p>
- * 
+ * arcs
  * <p>
  * Nodes are comparable based on their ID.
  * </p>
