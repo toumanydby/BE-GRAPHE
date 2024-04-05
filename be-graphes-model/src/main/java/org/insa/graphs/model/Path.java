@@ -2,6 +2,7 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,21 +35,42 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcSucc = new ArrayList<Arc>();
 
-        for (int i = 0; i < nodes.size()-1; i++) {
-            arcSucc = nodes.get(i).getSuccessors();
-            double max = arcSucc.get(0).getMinimumTravelTime();
-            int ind = 0;
-            for (int j = 1; j < arcSucc.size(); j++) {
-                arcSucc.get(j).getDestination() 
-                if (arcSucc.get(j).getMinimumTravelTime() < max) {
-                    ind = j;
+        if (nodes.isEmpty()) {
+            return new Path(graph);
+        }
+        if (nodes.size() == 1) {
+            return new Path(graph, nodes.get(0));
+        }
+
+        List<Arc> arcs = new ArrayList<Arc>();
+
+        Node originNode;
+        Node destinationNode;
+
+        Iterator<Node> nodeIterator = nodes.iterator();
+
+        destinationNode = nodeIterator.next();
+
+        while (nodeIterator.hasNext()) {
+            originNode = destinationNode;
+            destinationNode = nodeIterator.next();
+
+            List<Arc> arcSucc = new ArrayList<Arc>();
+            arcSucc = originNode.getSuccessors();
+            Arc arcToAdd = null;
+            double minimumTravelTime = Double.MAX_VALUE;
+            for (Arc succ : arcSucc) {
+                if (destinationNode.equals(succ.getDestination()) &&
+                        succ.getMinimumTravelTime() < minimumTravelTime) {
+                    arcToAdd = succ;
+                    minimumTravelTime = succ.getMinimumTravelTime();
                 }
             }
 
-            arcs.add(arcSucc.get(ind));
+            arcs.add(arcSucc.get());
         }
+
         return new Path(graph, arcs);
     }
 
@@ -69,7 +91,45 @@ public class Path {
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
+        if (nodes.isEmpty()) {
+            return new Path(graph);
+        }
+        if (nodes.size() == 1) {
+            return new Path(graph, nodes.get(0));
+        }
+
         List<Arc> arcs = new ArrayList<Arc>();
+
+        Node originNode;
+        Node destinationNode;
+
+        Iterator<Node> nodeIterator = nodes.iterator();
+
+        destinationNode = nodeIterator.next();
+
+        while (nodeIterator.hasNext()) {
+            originNode = destinationNode;
+            destinationNode = nodeIterator.next();
+
+            List<Arc> arcSucc = new ArrayList<Arc>();
+            arcSucc = originNode.getSuccessors();
+            Arc arcToAdd = null;
+            double minLength = Double.MAX_VALUE;
+            for (Arc succ : arcSucc) {
+                if (destinationNode.equals(succ.getDestination()) &&
+                        succ.getLength() < minLength) {
+                    arcToAdd = succ;
+                    minLength = succ.getLength();
+                }
+            }
+
+            if (arcToAdd == null) {
+                throw new IllegalArgumentException();
+            } else {
+                arcs.add(arcToAdd);
+            }
+        }
+
         return new Path(graph, arcs);
     }
 
