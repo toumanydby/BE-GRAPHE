@@ -68,7 +68,11 @@ public class Path {
                 }
             }
 
-            arcs.add(arcSucc.get());
+            if (arcToAdd == null) {
+                throw new IllegalArgumentException();
+            } else {
+                arcs.add(arcToAdd);
+            }
         }
 
         return new Path(graph, arcs);
