@@ -31,7 +31,6 @@ public class Path {
      *                                  consecutive nodes in the list are not
      *                                  connected in the graph.
      * 
-     * @deprecated Need to be implemented.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
@@ -45,6 +44,7 @@ public class Path {
             double max = arcSucc.get(0).getMinimumTravelTime();
             int ind = 0;
             for (int j = 1; j < arcSucc.size(); j++) {
+                arcSucc.get(j).getDestination() 
                 if (arcSucc.get(j).getMinimumTravelTime() < max) {
                     ind = j;
                 }
