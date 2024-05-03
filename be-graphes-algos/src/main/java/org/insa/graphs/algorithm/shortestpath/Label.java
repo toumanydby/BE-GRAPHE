@@ -51,9 +51,12 @@ public class Label implements Comparable<Label> {
 
     @Override
     public int compareTo(Label toCompare) {
-        return Double.compare(this.getCost(), toCompare.getCost());
+        return Double.compare(this.getTotalCost(), toCompare.getTotalCost());
     }
-
+    
+    public double getTotalCost(){
+        return this.getCost();
+    }
     
     
 }

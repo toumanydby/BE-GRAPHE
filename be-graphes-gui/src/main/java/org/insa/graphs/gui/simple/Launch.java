@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -20,6 +21,8 @@ import org.insa.graphs.model.io.GraphReader;
 import org.insa.graphs.model.io.PathReader;
 
 public class Launch {
+
+    
 
     /**
      * Create a new Drawing inside a JFrame an return it.
@@ -78,6 +81,8 @@ public class Launch {
 
         // TODO: Draw the path.
         drawing.drawPath(path);
+
+        pathReader.close();
     }
 
 }

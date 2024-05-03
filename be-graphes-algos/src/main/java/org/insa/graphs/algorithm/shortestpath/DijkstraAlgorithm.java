@@ -43,27 +43,28 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         Label x;
 
-        while (!(tasBinaire.isEmpty())
-                && !(labels[data.getDestination().getId()].getMarked())) {
-
+        while (!(tasBinaire.isEmpty()) && !(labels[data.getDestination().getId()].getMarked())) {
+            //System.out.println(tasBinaire.toString());
             x = tasBinaire.deleteMin();
+        
             x.setMarked(true);
+            System.out.println(x.getCost());
+            this.notifyNodeMarked(x.getSommetCourant());
 
             for (Arc arc : x.getSommetCourant().getSuccessors()) {
+
                 Node succDesti = arc.getDestination();
                 if (!(labels[succDesti.getId()].getMarked())) {
-                    if ((labels[succDesti.getId()].getCost() > labels[x.getSommetCourant().getId()].getCost()
-                            + data.getCost(arc)
-                            && data.isAllowed(arc))) {
+                    if ((labels[succDesti.getId()].getCost() > labels[x.getSommetCourant().getId()].getCost() + data.getCost(arc) && data.isAllowed(arc))) {
                         try {
                             tasBinaire.remove(labels[succDesti.getId()]);
                         } catch (ElementNotFoundException e) {
                         }
 
                         labels[succDesti.getId()].setPere(arc);
-                        labels[succDesti.getId()]
-                                .setCost(labels[x.getSommetCourant().getId()].getCost() + data.getCost(arc));
-                        labels[succDesti.getId()] = new Label(succDesti);
+                        this.notifyNodeReached(succDesti);
+                        labels[succDesti.getId()].setCost(labels[x.getSommetCourant().getId()].getCost() + data.getCost(arc));
+                        tasBinaire.insert(labels[succDesti.getId()]);
                     }
                 }
             }
@@ -71,19 +72,22 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         if ((labels[data.getDestination().getId()].getMarked())) {
             ArrayList<Arc> listPereSucc = new ArrayList<Arc>();
+            Label labelCourant = labels[data.getDestination().getId()];
+            Label labelOrigine = labels[data.getOrigin().getId()];
 
-            for (int i = 0; i < labels.length; i++) {
-                listPereSucc.add(i, labels[i].getPere());
+            while (labelOrigine != labelCourant) {
+                listPereSucc.add(labelCourant.getPere());
+                labelCourant = labels[labelCourant.getPere().getOrigin().getId()];          
             }
             
             Collections.reverse(listPereSucc);
 
             Path finalPath = new Path(ourGraph, listPereSucc);
-            System.out.println("OPTIMAL");
+            //System.out.println("OPTIMAL");
 
             solution = new ShortestPathSolution(data, Status.OPTIMAL, finalPath);
         } else {
-            System.out.println("INFEASIBLE");
+            //System.out.println("INFEASIBLE");
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
 

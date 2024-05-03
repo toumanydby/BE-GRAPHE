@@ -25,7 +25,6 @@ public class GraphTest {
 
     @BeforeClass
     public static void initAll() throws IOException {
-
         // Create nodes
         nodes = new Node[5];
         for (int i = 0; i < nodes.length; ++i) {
