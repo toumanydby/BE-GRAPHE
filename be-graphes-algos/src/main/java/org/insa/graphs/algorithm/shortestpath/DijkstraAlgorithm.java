@@ -44,11 +44,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         Label x;
 
         while (!(tasBinaire.isEmpty()) && !(labels[data.getDestination().getId()].getMarked())) {
-            //System.out.println(tasBinaire.toString());
             x = tasBinaire.deleteMin();
         
             x.setMarked(true);
-            System.out.println(x.getCost());
             this.notifyNodeMarked(x.getSommetCourant());
 
             for (Arc arc : x.getSommetCourant().getSuccessors()) {
@@ -70,8 +68,10 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             }
         }
 
+        ArrayList<Arc> listPereSucc = new ArrayList<Arc>();
+        Path finalPath = null;
+        // On reconstruit notre chemin grace a la liste des successeurs des peres.
         if ((labels[data.getDestination().getId()].getMarked())) {
-            ArrayList<Arc> listPereSucc = new ArrayList<Arc>();
             Label labelCourant = labels[data.getDestination().getId()];
             Label labelOrigine = labels[data.getOrigin().getId()];
 
@@ -81,14 +81,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             }
             
             Collections.reverse(listPereSucc);
+            
+            finalPath = new Path(ourGraph, listPereSucc);
+        }
 
-            Path finalPath = new Path(ourGraph, listPereSucc);
-            //System.out.println("OPTIMAL");
-
-            solution = new ShortestPathSolution(data, Status.OPTIMAL, finalPath);
-        } else {
-            //System.out.println("INFEASIBLE");
+        if (finalPath.isEmpty()){
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        } else {
+            solution = new ShortestPathSolution(data, Status.OPTIMAL, finalPath);
         }
 
         return solution;
